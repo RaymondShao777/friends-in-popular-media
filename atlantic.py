@@ -1,6 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 import xlsxwriter
+import time
 
 def record_year(driver, workbook, year):
     HEADER = ['Headline', 'Link', 'Date', 'Summary']
@@ -31,25 +32,28 @@ def check_article(driver, link):
 def sign_in(driver):
     email = "jkrems@gmail.com"
     password = open("atlantic.key", "r").read()
+
     driver.get('https://accounts.theatlantic.com/login/?redirect=%2F')
     username_input = driver.find_element(By.XPATH, "//input[@id='username']")
     username_input.send_keys(email)
     button = driver.find_element(By.XPATH, "//button[contains(text(), 'Continue')]")
     button.click()
+    time.sleep(1)
 
     password_input = driver.find_element(By.XPATH, "//input[@id='password']")
     password_input.send_keys(password)
     button = driver.find_element(By.XPATH, "//button[contains(text(), 'Sign In')]")
     button.click()
+    time.sleep(1)
 
 driver = webdriver.Firefox()
 sign_in(driver)
-'''
+
 workbook = xlsxwriter.Workbook("atlantic.xlsx")
 for year in range(2015, 2025, 1):
     record_year(driver, workbook, year)
 workbook.close()
-'''
+
 driver.get('https://www.theatlantic.com/magazine/archive/2015/01/the-tragedy-of-the-american-military/383516/')
 driver.quit()
 
