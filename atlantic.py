@@ -28,7 +28,22 @@ def check_article(driver, link):
     driver.get(link)
     driver.back()
 
+def sign_in(driver):
+    email = "jkrems@gmail.com"
+    password = open("atlantic.key", "r").read()
+    driver.get('https://accounts.theatlantic.com/login/?redirect=%2F')
+    username_input = driver.find_element(By.XPATH, "//input[@id='username']")
+    username_input.send_keys(email)
+    button = driver.find_element(By.XPATH, "//button[contains(text(), 'Continue')]")
+    button.click()
+
+    password_input = driver.find_element(By.XPATH, "//input[@id='password']")
+    password_input.send_keys(password)
+    button = driver.find_element(By.XPATH, "//button[contains(text(), 'Sign In')]")
+    button.click()
+
 driver = webdriver.Firefox()
+sign_in(driver)
 '''
 workbook = xlsxwriter.Workbook("atlantic.xlsx")
 for year in range(2015, 2025, 1):
