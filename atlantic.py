@@ -8,6 +8,8 @@ def record_year(driver, workbook, year):
     BOLD = workbook.add_format({'bold':True})
     WRAP = workbook.add_format()
     WRAP.set_shrink()
+    WRAP.set_font_name('Calibri')
+    WRAP.set_font_size(12)
 
     worksheet = workbook.add_worksheet(str(year))
     worksheet.write_row(0, 0, HEADER, BOLD)
@@ -21,13 +23,26 @@ def record_year(driver, workbook, year):
 
         for element in elements:
             link = element.get_attribute("href")
-            row_to_write = (element.text, element.get_attribute("href"), str(year) + "-" + month)
+            isFriend, abstract = check_article(driver, link)
+            if not isFriend:
+                continue
+            row_to_write = (element.text, element.get_attribute("href"), str(year) + "-" + month, abstract)
             worksheet.write_row(cur_row, 0, row_to_write, WRAP)
             cur_row += 1
 
 def check_article(driver, link):
     driver.get(link)
+    if len(driver.find_elements(By.XPATH, "//*[contains(text(), 'friend')]")) == 0:
+        return (False, None)
+
+    abstract = ''
+    try:
+        abstract = driver.find_element(By.XPATH, "//p[contains(@class,'ArticleDek_feature')]")
+    except:
+        continue
     driver.back()
+
+    return (True, abstract)
 
 def sign_in(driver):
     email = "jkrems@gmail.com"
